@@ -1,23 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [listA, setListA] = useState('');
+  const [listB, setListB] = useState('');
+  const [results, setResults] = useState([]);
+
+  const computeDifferences = () => {
+    const arrayA = listA.split(',');
+    const arrayB = listB.split(',');
+
+    const uniqueA = arrayA.filter((item) => !arrayB.includes(item));
+    const uniqueB = arrayB.filter((item) => !arrayA.includes(item));
+    const commonItems = arrayA.filter((item) => arrayB.includes(item));
+    const combinedItems = [...new Set([...arrayA, ...arrayB])];
+
+    const differences = {
+      onlyInA: uniqueA,
+      onlyInB: uniqueB,
+      commonItems: commonItems,
+      combinedItems: combinedItems,
+    };
+
+    setResults(differences);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <label>List A:</label>
+        <input
+          type="text"
+          value={listA}
+          onChange={(e) => setListA(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>List B:</label>
+        <input
+          type="text"
+          value={listB}
+          onChange={(e) => setListB(e.target.value)}
+        />
+      </div>
+      <button onClick={computeDifferences}>Compute</button>
+
+      <div>
+        <h2>Results:</h2>
+        <p>Items only in A: {results.onlyInA && results.onlyInA.join(', ')}</p>
+        <p>Items only in B: {results.onlyInB && results.onlyInB.join(', ')}</p>
+        <p>Items present in both A and B: {results.commonItems && results.commonItems.join(', ')}</p>
+        <p>Combined unique items: {results.combinedItems && results.combinedItems.join(', ')}</p>
+      </div>
     </div>
   );
 }
